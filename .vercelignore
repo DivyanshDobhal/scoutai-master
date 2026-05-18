@@ -1,0 +1,12 @@
+backend/
+data/
+*.py
+requirements.txt
+render.yaml
+server.js
+.env
+.env.*
+__pycache__/
+*.py[cod]
+data/faiss_index.bin
+data/*.pkl
