@@ -1,4 +1,10 @@
-const API = '';  
+const API = (
+  window.__SCOUTAI_CONFIG__?.apiUrl ||
+  window.__API_URL__ ||
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8000'
+    : '')
+).replace(/\/+$/, '');
 
 const SAMPLE_JD = `Senior Backend Engineer — Fintech Startup (Remote)
 
@@ -62,7 +68,9 @@ async function checkHealth() {
     apiCard.className = 'api-status-card offline';
     apiDot.className = 'api-dot offline';
     apiLabel.textContent = 'Server Unreachable';
-    apiDetail.textContent = '❌ Cannot connect to backend at localhost:8000';
+    apiDetail.textContent = API
+      ? `Cannot connect to backend at ${API}`
+      : 'Cannot connect to the backend. Set API_URL in Vercel or run the FastAPI app on the same origin.';
   }
 }
 function loadSampleJD() {

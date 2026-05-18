@@ -6,6 +6,7 @@ __pycache__/
 
 # Virtual environments
 .env
+.env.*
 .venv
 env/
 venv/
@@ -23,6 +24,7 @@ Thumbs.db
 # Project specifics
 data/faiss_index.bin
 data/*.pkl
+frontend/config.js
 implementation_plan.md
 task.md
 walkthrough.md

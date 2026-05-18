@@ -9,7 +9,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from pydantic import BaseModel
 from backend.config import FINAL_TOP_K, BASE_DIR
 from backend.llm_client import llm
@@ -52,7 +52,18 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origin_regex=r"https://[a-z0-9-]+\.vercel\.app",
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:8000",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:8000",
+        *[
+            origin.strip().rstrip("/")
+            for origin in os.getenv("FRONTEND_URLS", "").split(",")
+            if origin.strip()
+        ],
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -87,6 +98,27 @@ async def serve_frontend():
     if os.path.exists(index_path):
         return FileResponse(index_path)
     return {"message": "ScoutAI API is running. Frontend not found."}
+
+
+@app.get("/style.css")
+async def serve_frontend_styles():
+    return FileResponse(os.path.join(frontend_dir, "style.css"))
+
+
+@app.get("/app.js")
+async def serve_frontend_app():
+    return FileResponse(os.path.join(frontend_dir, "app.js"))
+
+
+@app.get("/config.js")
+async def serve_frontend_config():
+    config_path = os.path.join(frontend_dir, "config.js")
+    if os.path.exists(config_path):
+        return FileResponse(config_path)
+    return Response(
+        "window.__SCOUTAI_CONFIG__ = { apiUrl: '' };\n",
+        media_type="application/javascript",
+    )
 
 
 @app.get("/health")

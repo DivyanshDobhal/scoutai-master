@@ -1,0 +1,12 @@
+{
+  "name": "scoutai-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-config.js",
+    "dev": "npx serve frontend"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
